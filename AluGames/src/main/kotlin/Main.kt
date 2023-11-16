@@ -1,4 +1,6 @@
 import com.google.gson.Gson
+import java.lang.Exception
+import java.lang.NullPointerException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -9,7 +11,7 @@ import java.util.Scanner
 
 fun main(args: Array<String>) {
     val leitura = Scanner(System.`in`)
-    println("Digite o codigo do jogo: ")
+    print("Digite o codigo do jogo: ")
 
     val busca = leitura.nextLine();
     val endereco = "https://www.cheapshark.com/api/1.0/games?id=$busca"
@@ -25,11 +27,14 @@ fun main(args: Array<String>) {
         .send(request, BodyHandlers.ofString())
 
     val json = response.body()
-  //  println(json)
+    println(json)
 
-    val gson = Gson()
-    val meuInfoJogo = gson.fromJson(json, InfoJogo::class.java)
-
-    val meuJogo = Jogo(meuInfoJogo.info.title, meuInfoJogo.info.thumb)
-    println(meuJogo)
+    try {
+        val gson = Gson()
+        val meuInfoJogo = gson.fromJson(json, InfoJogo::class.java)
+        val meuJogo = Jogo(meuInfoJogo.info.title, meuInfoJogo.info.thumb)
+        println(meuJogo)
+    } catch (ex: Exception){
+        println("Jogo inexistente. Tente outro id.")
+    }
 }
